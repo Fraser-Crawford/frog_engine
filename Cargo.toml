@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 winit = "0.30.5"
 pixels = "0.14.0"
+winit_input_helper = "0.16.0"

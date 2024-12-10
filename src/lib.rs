@@ -3,6 +3,8 @@ use winit::error::EventLoopError;
 use winit::event::WindowEvent;
 use winit::event_loop::{ActiveEventLoop, ControlFlow, EventLoop};
 use winit::window::{Window, WindowId};
+use winit_input_helper::WinitInputHelper;
+
 #[derive(Default)]
 struct App {
     window: Option<Window>,
@@ -29,6 +31,8 @@ impl ApplicationHandler for App {
 
 pub fn make_main(polling:bool) -> Result<(), EventLoopError> {
     let event_loop = EventLoop::new()?;
+    let mut input = WinitInputHelper::new();
+    
     if polling {
         event_loop.set_control_flow(ControlFlow::Poll);
     } else {
