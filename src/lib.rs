@@ -5,14 +5,28 @@ use winit::event_loop::{ActiveEventLoop, ControlFlow, EventLoop};
 use winit::window::{Window, WindowId};
 use winit_input_helper::WinitInputHelper;
 
-#[derive(Default)]
 struct App {
     window: Option<Window>,
+    title: String,
+}
+impl App {
+    fn new<T:Into<String>>(title: T) -> Self {
+        App{window: None, title: title.into()}
+    }
+}
+impl Default for App {
+    fn default() -> Self {
+        App {
+            window: None,
+            title: String::from("Title"),
+        }
+    }
 }
 
 impl ApplicationHandler for App {
     fn resumed(&mut self, event_loop: &ActiveEventLoop) {
-        self.window = Some(event_loop.create_window(Window::default_attributes()).unwrap());
+        let attributes = Window::default_attributes().with_title(&self.title);
+        self.window = Some(event_loop.create_window(attributes).unwrap());
     }
 
     fn window_event(&mut self, event_loop: &ActiveEventLoop, id: WindowId, event: WindowEvent) {
@@ -20,7 +34,7 @@ impl ApplicationHandler for App {
             WindowEvent::CloseRequested => {
                 println!("The close button was pressed; stopping");
                 event_loop.exit();
-            },
+            }
             WindowEvent::RedrawRequested => {
                 self.window.as_ref().unwrap().request_redraw();
             }
@@ -29,15 +43,15 @@ impl ApplicationHandler for App {
     }
 }
 
-pub fn make_main(polling:bool) -> Result<(), EventLoopError> {
+pub fn make_main<T:Into<String>>(polling: bool, window_title: T) -> Result<(), EventLoopError> {
     let event_loop = EventLoop::new()?;
     let mut input = WinitInputHelper::new();
-    
+
     if polling {
         event_loop.set_control_flow(ControlFlow::Poll);
     } else {
         event_loop.set_control_flow(ControlFlow::Wait);
     }
-    let mut app = App::default();
+    let mut app = App::new(window_title);
     event_loop.run_app(&mut app)
 }
