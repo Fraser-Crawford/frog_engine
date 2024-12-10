@@ -1,0 +1,8 @@
+[package]
+name = "frog_engine"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+winit = "0.30.5"
+pixels = "0.14.0"
